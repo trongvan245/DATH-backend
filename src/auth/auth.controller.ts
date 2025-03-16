@@ -4,7 +4,9 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { LoginDto, RegisterDto } from "./dto/auth.dto";
 import { AuthService } from "./auth.service";
 import { Public } from "src/common/decorators/public.decorator";
+import { ApiTags } from "@nestjs/swagger";
 
+@ApiTags("Auth")
 @Public()
 @Controller("auth")
 export class AuthController {
@@ -13,9 +15,9 @@ export class AuthController {
     private authService: AuthService,
   ) {}
 
-  @Get("login")
+  @Post("login")
   async login(@Body() { username, password }: LoginDto) {
-    if (!username || !password) throw new BadRequestException("Vui lòng điền đầy đủ thông tin!");
+    // if (!username || !password) throw new BadRequestException("Vui lòng điền đầy đủ thông tin!");
     const user = await this.prisma.uSER.findFirst({ where: { Username: username } });
     if (!user) throw new BadRequestException("Tên người dùng không tồn tại!");
 
@@ -30,9 +32,9 @@ export class AuthController {
     };
   }
 
-  @Get("register")
+  @Post("register")
   async register(@Body() { username, email, password }: RegisterDto) {
-    if (!username || !email || !password) throw new BadRequestException("Vui lòng điền đầy đủ thông tin!");
+    // if (!username || !email || !password) throw new BadRequestException("Vui lòng điền đầy đủ thông tin!");
     const existingUsername = await this.prisma.uSER.findFirst({ where: { Username: username } });
     if (existingUsername) throw new BadRequestException("Tên người dùng đã tồn tại!");
 

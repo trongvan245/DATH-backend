@@ -1,36 +1,60 @@
-import { BadRequestException, Controller, InternalServerErrorException } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, InternalServerErrorException, Post } from "@nestjs/common";
 import * as bcrypt from "bcrypt";
-import { Request } from "express";
 import { PrismaService } from "src/prisma/prisma.service";
+import { LoginDto, RegisterDto } from "./dto/auth.dto";
+import { AuthService } from "./auth.service";
+import { Public } from "src/common/decorators/public.decorator";
 
+@Public()
 @Controller("auth")
 export class AuthController {
-  constructor(private prisma: PrismaService) {}
-  async register(req: Request) {
-    const { username, email, password } = req.body;
+  constructor(
+    private prisma: PrismaService,
+    private authService: AuthService,
+  ) {}
 
-    try {
-      if (!username || !email || !password) return new BadRequestException("Vui lòng điền đầy đủ thông tin!");
-      const existingUsername = await this.prisma.User.findOne({ where: { Username: username } });
-      if (existingUsername) return new BadRequestException("Tên người dùng đã tồn tại!");
+  @Get("login")
+  async login(@Body() { username, password }: LoginDto) {
+    if (!username || !password) throw new BadRequestException("Vui lòng điền đầy đủ thông tin!");
+    const user = await this.prisma.uSER.findFirst({ where: { Username: username } });
+    if (!user) throw new BadRequestException("Tên người dùng không tồn tại!");
 
-      const existingUseremail = await this.prisma.User.findOne({ where: { Email: email } });
-      if (existingUseremail) return new BadRequestException({ message: "Email đã tồn tại!" });
+    const passwordMatch = await bcrypt.compare(password, user.Password);
+    if (!passwordMatch) throw new BadRequestException("Mật khẩu không đúng!");
 
-      const hashedPassword = await bcrypt.hash(password, 10);
+    const token = await this.authService.signToken(user.UserID, user.Email);
+    return {
+      message: "Đăng nhập thành công!",
+      user,
+      token,
+    };
+  }
 
-      const newUser = await this.prisma.User.create({
+  @Get("register")
+  async register(@Body() { username, email, password }: RegisterDto) {
+    if (!username || !email || !password) throw new BadRequestException("Vui lòng điền đầy đủ thông tin!");
+    const existingUsername = await this.prisma.uSER.findFirst({ where: { Username: username } });
+    if (existingUsername) throw new BadRequestException("Tên người dùng đã tồn tại!");
+
+    const existingUseremail = await this.prisma.uSER.findFirst({ where: { Email: email } });
+    if (existingUseremail) throw new BadRequestException("Email đã tồn tại!");
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await this.prisma.uSER.create({
+      data: {
         Username: username,
         Email: email,
         Password: hashedPassword,
-      });
+      },
+    });
 
-      return {
-        message: "Đăng ký thành công!",
-        user: newUser,
-      };
-    } catch (err) {
-      return new InternalServerErrorException({ message: "Lỗi server!", error: err.message });
-    }
+    const token = await this.authService.signToken(newUser.UserID, newUser.Email);
+
+    return {
+      message: "Đăng ký thành công!",
+      user: newUser,
+      token,
+    };
   }
 }

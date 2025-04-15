@@ -4,17 +4,22 @@ import { PrismaModule } from "./prisma/prisma.module";
 import { AuthService } from "./auth/auth.service";
 import { AuthModule } from "./auth/auth.module";
 import { UserModule } from "./user/user.module";
+import { MqttModule } from "./mqtt/mqtt.module";
 import { APP_GUARD } from "@nestjs/core";
 import { JwtGuard } from "./auth/guard/jwt.guard";
+import { MqttService } from "./mqtt/mqtt.service";
+import { MqttController } from "./mqtt/mqtt.controller";
+//import { WebsocketGateway } from "./websocket/websocket.gateway";
 
 @Module({
-  imports: [PrismaModule, AuthModule, UserModule],
+  imports: [PrismaModule, AuthModule, UserModule, MqttModule],
   controllers: [],
   providers: [
     {
       provide: APP_GUARD,
       useClass: JwtGuard,
-    },
+    }
+    //WebsocketGateway
   ],
 })
 export class AppModule {}

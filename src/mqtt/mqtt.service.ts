@@ -5,7 +5,7 @@ import * as mqtt from 'mqtt';
 @Injectable()
 export class MqttService implements OnModuleInit, OnModuleDestroy {
     private readonly ADAFRUIT_IO_USERNAME = 'huyntpntp';
-    private readonly ADAFRUIT_IO_KEY = 'aio_EgtO71Sp7rCfColYyhcozAsu2fE8'; // Thay bằng key thật
+    private readonly ADAFRUIT_IO_KEY = 'aio_EgtO71Sp7rCfColYyhcozAsu2fE8'; 
     private readonly BROKER_URL = 'mqtt://io.adafruit.com';
 
     private readonly FEEDS = [
@@ -18,7 +18,7 @@ export class MqttService implements OnModuleInit, OnModuleDestroy {
     constructor() {}
 
     onModuleInit() {
-        console.log('🚀 AdafruitMqttService đã khởi động');
+        console.log('AdafruitMqttService đã khởi động');
         this.connectMqtt();
     }
 
@@ -42,7 +42,7 @@ export class MqttService implements OnModuleInit, OnModuleDestroy {
         });
 
         this.mqttClient.on('error', (err) => {
-        console.error('❌ Lỗi kết nối MQTT:', err);
+        console.error('Lỗi kết nối MQTT:', err);
         });
     }
 
@@ -51,9 +51,9 @@ export class MqttService implements OnModuleInit, OnModuleDestroy {
         const topic = `${this.ADAFRUIT_IO_USERNAME}/feeds/${feed}`;
         this.mqttClient.subscribe(topic, (err) => {
             if (err) {
-            console.error(`❌ Không thể subscribe ${topic}:`, err);
+            console.error(`Không thể subscribe ${topic}:`, err);
             } else {
-            console.log(`📡 Đã subscribe: ${topic}`);
+            console.log(`Đã subscribe: ${topic}`);
             }
         });
         });
@@ -63,9 +63,9 @@ export class MqttService implements OnModuleInit, OnModuleDestroy {
         const topic = `${this.ADAFRUIT_IO_USERNAME}/feeds/${feed}`;
         this.mqttClient.publish(topic, value, {}, (err) => {
         if (err) {
-            console.error(`❌ Lỗi gửi dữ liệu đến ${topic}:`, err);
+            console.error(`Lỗi gửi dữ liệu đến ${topic}:`, err);
         } else {
-            console.log(`📤 Gửi dữ liệu đến ${topic}: ${value}`);
+            console.log(`Gửi dữ liệu đến ${topic}: ${value}`);
         }
         });
     }
@@ -82,7 +82,7 @@ export class MqttService implements OnModuleInit, OnModuleDestroy {
 
 
     onModuleDestroy() {
-        console.log('❌ Đóng kết nối MQTT');
+        console.log('Đóng kết nối MQTT');
         this.mqttClient.end();
     }
 

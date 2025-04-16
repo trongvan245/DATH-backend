@@ -24,7 +24,10 @@ export class AuthController {
     const passwordMatch = await bcrypt.compare(password, user.Password);
     if (!passwordMatch) throw new BadRequestException("Mật khẩu không đúng!");
 
+    console.log(user);
+
     const token = await this.authService.signToken(user.UserID, user.Email);
+    console.log(username, password, token);
     return {
       message: "Đăng nhập thành công!",
       user,

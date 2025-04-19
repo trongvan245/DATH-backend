@@ -29,13 +29,13 @@ export class MqttService implements OnModuleInit, OnModuleDestroy {
         });
 
         this.mqttClient.on('connect', () => {
-        console.log('✅ Kết nối Adafruit MQTT thành công!');
+        console.log('Kết nối Adafruit MQTT thành công!');
         this.subscribeToFeeds();
         });
 
         this.mqttClient.on('message', (topic, message) => {
         const payload = message.toString();
-        console.log(`📥 Nhận dữ liệu từ ${topic}: ${payload}`);
+        console.log(`Nhận dữ liệu từ ${topic}: ${payload}`);
         if (this.io) {
             this.io.emit('mqtt_data', { topic, payload });
         }

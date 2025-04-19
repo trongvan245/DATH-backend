@@ -4,12 +4,12 @@ import * as mqtt from 'mqtt';
 
 @Injectable()
 export class MqttService implements OnModuleInit, OnModuleDestroy {
-    private readonly ADAFRUIT_IO_USERNAME = 'huyntpntp';
-    private readonly ADAFRUIT_IO_KEY = 'aio_EgtO71Sp7rCfColYyhcozAsu2fE8'; 
+    private readonly ADAFRUIT_IO_USERNAME = 'boylangtham11';
+    private readonly ADAFRUIT_IO_KEY = 'aio_lZQP118OcN6ygJqGarcpNVcj3DzW'; 
     private readonly BROKER_URL = 'mqtt://io.adafruit.com';
 
     private readonly FEEDS = [
-        'light1', 'light1_brightness'
+        'LED_room_1', 'hum'
     ];
 
     private mqttClient: mqtt.MqttClient;
@@ -80,13 +80,15 @@ export class MqttService implements OnModuleInit, OnModuleDestroy {
         await this.publish('light1', value==='0'?'0':'1');
     }
 
+    setSocketServer(io: Server) {
+        this.io = io;
+        console.log('WebSocket server đã được gán vào MqttService');
+    }
+    
+
 
     onModuleDestroy() {
         console.log('Đóng kết nối MQTT');
         this.mqttClient.end();
-    }
-
-    setSocketServer(io: Server) {
-        this.io = io;
     }
 }

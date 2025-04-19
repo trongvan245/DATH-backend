@@ -9,10 +9,10 @@ import { APP_GUARD } from "@nestjs/core";
 import { JwtGuard } from "./auth/guard/jwt.guard";
 import { MqttService } from "./mqtt/mqtt.service";
 import { MqttController } from "./mqtt/mqtt.controller";
-//import { WebsocketGateway } from "./websocket/websocket.gateway";
-
+import { WebsocketModule } from "./websocket/websocket.module";
 @Module({
-  imports: [PrismaModule, AuthModule, UserModule, MqttModule],
+  imports: [
+    PrismaModule, AuthModule, UserModule, MqttModule,WebsocketModule],
   controllers: [],
   providers: [
     {

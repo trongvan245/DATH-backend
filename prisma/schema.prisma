@@ -7,51 +7,51 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Activity_log {
+model activity_log {
   log_id     Int       @id @default(autoincrement())
   timestamp  DateTime? @db.Timestamp(0)
   event_type String?   @db.VarChar(50)
   user_id    Int
   device_id  Int
-  user       User      @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  device     Device    @relation(fields: [device_id], references: [device_id], onDelete: Cascade)
+  user       user      @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  device     device    @relation(fields: [device_id], references: [device_id], onDelete: Cascade)
 
   @@index([device_id])
   @@index([user_id])
 }
 
-model Blacklist {
+model blacklist {
   token String @id @db.VarChar(100)
 }
 
-model Device {
+model device {
   device_id     Int            @id @default(autoincrement())
   device_name   String?        @db.VarChar(50)
   room_id       Int
   status        String?        @db.VarChar(50)
   adafruit_key  String?        @db.VarChar(50)
-  activity_logs Activity_log[]
-  room          Room           @relation(fields: [room_id], references: [room_id], onDelete: Cascade)
+  activity_logs activity_log[]
+  room          room           @relation(fields: [room_id], references: [room_id], onDelete: Cascade)
 
   @@index([room_id])
 }
 
-model Room {
+model room {
   room_id      Int      @id @default(autoincrement())
   room_name    String?  @db.VarChar(50)
   user_id      Int
   adafruit_key String?  @db.VarChar(50)
-  devices      Device[]
-  user         User     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  devices      device[]
+  user         user     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
 
   @@index([user_id])
 }
 
-model User {
+model user {
   user_id       Int            @id @default(autoincrement())
   username      String?        @db.VarChar(50)
   password      String?        @db.VarChar(255)
   email         String?        @db.VarChar(255)
-  activity_logs Activity_log[]
-  rooms         Room[]
+  activity_logs activity_log[]
+  rooms         room[]
 }

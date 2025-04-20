@@ -18,7 +18,7 @@ async function bootstrap() {
     .setVersion("1.0")
     .addTag("Auth")
     .addTag("User")
-    .addTag("Room")
+    .addTag("room")
     .addTag("Device")
     .addTag("Mqtt")
     .build();

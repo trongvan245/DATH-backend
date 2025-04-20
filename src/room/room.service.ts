@@ -11,6 +11,7 @@ export class RoomService {
   }
 
   async createRoom(userId: number, roomName: string) {
+    console.log(userId, roomName);
     const room = await this.prisma.rOOM.create({
       data: {
         UserID: userId,

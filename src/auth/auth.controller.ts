@@ -18,15 +18,15 @@ export class AuthController {
   @Post("login")
   async login(@Body() { username, password }: LoginDto) {
     // if (!username || !password) throw new BadRequestException("Vui lòng điền đầy đủ thông tin!");
-    const user = await this.prisma.uSER.findFirst({ where: { Username: username } });
+    const user = await this.prisma.user.findFirst({ where: { username: username } });
     if (!user) throw new BadRequestException("Tên người dùng không tồn tại!");
 
-    const passwordMatch = await bcrypt.compare(password, user.Password);
+    const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) throw new BadRequestException("Mật khẩu không đúng!");
 
     console.log(user);
 
-    const token = await this.authService.signToken(user.UserID, user.Email);
+    const token = await this.authService.signToken(user.user_id, user.email);
     console.log(username, password, token);
     return {
       message: "Đăng nhập thành công!",
@@ -38,23 +38,23 @@ export class AuthController {
   @Post("register")
   async register(@Body() { username, email, password }: RegisterDto) {
     // if (!username || !email || !password) throw new BadRequestException("Vui lòng điền đầy đủ thông tin!");
-    const existingUsername = await this.prisma.uSER.findFirst({ where: { Username: username } });
+    const existingUsername = await this.prisma.user.findFirst({ where: { username: username } });
     if (existingUsername) throw new BadRequestException("Tên người dùng đã tồn tại!");
 
-    const existingUseremail = await this.prisma.uSER.findFirst({ where: { Email: email } });
+    const existingUseremail = await this.prisma.user.findFirst({ where: { email: email } });
     if (existingUseremail) throw new BadRequestException("Email đã tồn tại!");
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await this.prisma.uSER.create({
+    const newUser = await this.prisma.user.create({
       data: {
-        Username: username,
-        Email: email,
-        Password: hashedPassword,
+        username: username,
+        email: email,
+        password: hashedPassword,
       },
     });
 
-    const token = await this.authService.signToken(newUser.UserID, newUser.Email);
+    const token = await this.authService.signToken(newUser.user_id, newUser.email);
 
     return {
       message: "Đăng ký thành công!",

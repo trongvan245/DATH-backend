@@ -11,7 +11,7 @@ export class MqttService implements OnModuleDestroy {
     private io: Server;
     private currentUserId: number;
     private readonly username = 'boylangtham11';
-    private readonly aioKey = 'aio_qanp67dDmVQvlswNT0x5KTywWj3s';
+    private readonly aioKey = process.env.ADAFRUIT_IO_KEY || "";
 
     connect(userId: number) {  // Chuyển userId thành kiểu string vì bạn có thể sử dụng chuỗi như "boylangtham11"
         this.currentUserId = userId;

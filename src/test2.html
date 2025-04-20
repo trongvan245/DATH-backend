@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Socket.IO Test</title>
+</head>
+<body>
+  <h2>⚡ WebSocket MQTT Data Viewer</h2>
+  <div id="status">⏳ Đang kết nối...</div>
+  <div id="data"></div>
+
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script>
+    const userId = 2; 
+
+    const socket = io('http://localhost:3000');
+
+    socket.on('connect', () => {
+      document.getElementById('status').innerText = ` Đã kết nối với server. Socket ID: ${socket.id}`;
+      
+      socket.emit('register', { userId });
+      console.log('Đã gửi register:', { userId });
+    });
+
+    socket.on('disconnect', () => {
+      document.getElementById('status').innerText = `Mất kết nối WebSocket`;
+    });
+
+    // Nhận dữ liệu từ MQTT và hiển thị
+    socket.on('mqtt_data', (data) => {
+      console.log('Nhận dữ liệu MQTT:', data);
+    });
+  </script>
+</body>
+</html>

@@ -6,27 +6,27 @@ export class RoomService {
   constructor(private prisma: PrismaService) {}
 
   async getAllRoom(userId: number) {
-    const rooms = await this.prisma.rOOM.findMany({ where: { UserID: userId }, include: { DEVICE: true } });
+    const rooms = await this.prisma.room.findMany({ where: { user_id: userId }, include: { devices: true } });
     return rooms;
   }
 
   async createRoom(userId: number, roomName: string) {
     console.log(userId, roomName);
-    const room = await this.prisma.rOOM.create({
+    const room = await this.prisma.room.create({
       data: {
-        UserID: userId,
-        Roomname: roomName,
+        user_id: userId,
+        room_name: roomName,
       },
     });
     return room;
   }
 
   async addDeviceToRoom(userId: number, deviceId: number, roomId: number) {
-    const room = await this.prisma.rOOM.update({
-      where: { RoomID: roomId },
+    const room = await this.prisma.room.update({
+      where: { room_id: roomId },
       data: {
-        DEVICE: {
-          connect: { DeviceID: deviceId },
+        devices: {
+          connect: { device_id: deviceId },
         },
       },
     });
@@ -34,12 +34,12 @@ export class RoomService {
   }
 
   async getAllUserDevice(roomId: number) {
-    const devices = await this.prisma.dEVICE.findMany({ where: { RoomID: roomId } });
+    const devices = await this.prisma.device.findMany({ where: { room_id: roomId } });
     return devices;
   }
 
   async getAllDevice() {
-    const devices = await this.prisma.dEVICE.findMany({});
+    const devices = await this.prisma.device.findMany({});
     return devices;
   }
 }

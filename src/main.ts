@@ -18,9 +18,16 @@ async function bootstrap() {
     .setVersion("1.0")
     .addTag("Auth")
     .addTag("User")
+    .addTag("Room")
+    .addTag("Device")
+    .addTag("Mqtt")
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("api", app, document);
+  SwaggerModule.setup("api", app, document, {
+    swaggerOptions: {
+      persistAuthorization: true, // 🔥 this is the key
+    },
+  });
 
   await app.listen(3000);
 

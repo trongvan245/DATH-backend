@@ -10,9 +10,11 @@ import { JwtGuard } from "./auth/guard/jwt.guard";
 import { MqttService } from "./mqtt/mqtt.service";
 import { MqttController } from "./mqtt/mqtt.controller";
 //import { WebsocketGateway } from "./websocket/websocket.gateway";
+import { RoomModule } from './room/room.module';
+import { DeviceModule } from './device/device.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, UserModule, MqttModule],
+  imports: [PrismaModule, AuthModule, UserModule, MqttModule, RoomModule, DeviceModule],
   controllers: [],
   providers: [
     {

@@ -4,8 +4,8 @@ import * as mqtt from "mqtt";
 
 @Injectable()
 export class MqttService implements OnModuleInit, OnModuleDestroy {
-  private readonly ADAFRUIT_IO_USERNAME = "huyntpntp";
-  private readonly ADAFRUIT_IO_KEY = "aio_FRDR18Jv6sWIddx39FklnmDO7zWL";
+  private readonly ADAFRUIT_IO_USERNAME = "boylangtham11";
+  private readonly ADAFRUIT_IO_KEY = "aio_qflB23KCfcI97tbdNc8S8ntbuZkO";
   private readonly BROKER_URL = "mqtt://io.adafruit.com";
 
   private readonly FEEDS = ["light1", "light1_brightness"];

@@ -12,9 +12,10 @@ import { MqttController } from "./mqtt/mqtt.controller";
 //import { WebsocketGateway } from "./websocket/websocket.gateway";
 import { RoomModule } from './room/room.module';
 import { DeviceModule } from './device/device.module';
+import { WebsocketModule } from './websocket/websocket.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, UserModule, MqttModule, RoomModule, DeviceModule],
+  imports: [PrismaModule, AuthModule, UserModule, MqttModule, RoomModule, DeviceModule,WebsocketModule],
   controllers: [],
   providers: [
     {

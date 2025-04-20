@@ -1,88 +1,84 @@
-import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
-import { Server } from "socket.io";
-import * as mqtt from "mqtt";
+import { Injectable, OnModuleDestroy } from '@nestjs/common';
+import { Server } from 'socket.io';
+import * as mqtt from 'mqtt';
 
 @Injectable()
-export class MqttService implements OnModuleInit, OnModuleDestroy {
-  private readonly ADAFRUIT_IO_USERNAME = "boylangtham11";
-  private readonly ADAFRUIT_IO_KEY = "aio_qflB23KCfcI97tbdNc8S8ntbuZkO";
-  private readonly BROKER_URL = "mqtt://io.adafruit.com";
+export class MqttService implements OnModuleDestroy {
+    private readonly BROKER_URL = 'mqtt://io.adafruit.com';
+    private readonly FEED_NAMES = ['LED_room_1', 'LED_room_2', 'control_room_1', 'control_room_2', 'lux_room_1', 'lux_room_2', 'hum', 'temp'];
 
-  private readonly FEEDS = ["light1", "light1_brightness"];
+    private mqttClient: mqtt.MqttClient;
+    private io: Server;
+    private currentUserId: number;
+    private readonly username = 'boylangtham11';
+    private readonly aioKey = 'aio_qflB23KCfcI97tbdNc8S8ntbuZkO';
 
-  private mqttClient: mqtt.MqttClient;
-  private io: Server;
+    connect(userId: number) {  // Chuyển userId thành kiểu string vì bạn có thể sử dụng chuỗi như "boylangtham11"
+        this.currentUserId = userId;
+    
+        this.mqttClient = mqtt.connect(this.BROKER_URL, {
+            username: this.username,
+            password: this.aioKey,
+        });
+    
+        this.mqttClient.on('connect', () => {
+            console.log(` MQTT connected to Adafruit for user ${userId}`);
+            this.subscribeToUserFeeds(userId);
+        });
+    
+        this.mqttClient.on('message', (topic, message) => {
+            const payload = message.toString();
+            console.log(`Nhận dữ liệu từ ${topic}: ${payload}`);
+            const [userIdFromTopic, feedId, userid, feedName] = topic.split('/');
+            const numericUserId = userid;
+            this.io.to(numericUserId).emit('mqtt_data', {
+                feed: feedName,
+                value: isNaN(+payload) ? payload : +payload,
+            });
+        });
+    
+        this.mqttClient.on('error', (err) => {
+            console.error(' MQTT error:', err);
+        });
+    }
+    private subscribeToUserFeeds(userId: number) {
+        this.FEED_NAMES.forEach(feedName => {
+        const topic = `${this.username}/feeds/${userId}/${feedName}`;
+        this.mqttClient.subscribe(topic, (err) => {
+            if (err) {
+            console.error(` Failed to subscribe ${topic}`, err);
+            } else {
+            console.log(` Subscribed to ${topic}`);
+            }
+        });
+        });
+    }
 
-  constructor() {}
-
-  onModuleInit() {
-    console.log("AdafruitMqttService đã khởi động");
-    this.connectMqtt();
-  }
-
-  private connectMqtt() {
-    this.mqttClient = mqtt.connect(this.BROKER_URL, {
-      username: this.ADAFRUIT_IO_USERNAME,
-      password: this.ADAFRUIT_IO_KEY,
-    });
-
-    this.mqttClient.on("connect", () => {
-      console.log("✅ Kết nối Adafruit MQTT thành công!");
-      this.subscribeToFeeds();
-    });
-
-    this.mqttClient.on("message", (topic, message) => {
-      const payload = message.toString();
-      console.log(`📥 Nhận dữ liệu từ ${topic}: ${payload}`);
-      if (this.io) {
-        this.io.emit("mqtt_data", { topic, payload });
-      }
-    });
-
-    this.mqttClient.on("error", (err) => {
-      console.error("Lỗi kết nối MQTT:", err);
-    });
-  }
-
-  private subscribeToFeeds() {
-    this.FEEDS.forEach((feed) => {
-      const topic = `${this.ADAFRUIT_IO_USERNAME}/feeds/${feed}`;
-      this.mqttClient.subscribe(topic, (err) => {
+    async publish(userId: number, feedName: string, value: string) {
+        const topic = `${userId}/${feedName}`;
+        this.mqttClient.publish(topic, value, {}, (err) => {
         if (err) {
-          console.error(`Không thể subscribe ${topic}:`, err);
+            console.error(` Error publishing to ${topic}:`, err);
         } else {
-          console.log(`Đã subscribe: ${topic}`);
+            console.log(` Published to ${topic}: ${value}`);
         }
       });
-    });
-  }
+    };
 
-  async publish(feed: string, value: string) {
-    const topic = `${this.ADAFRUIT_IO_USERNAME}/feeds/${feed}`;
-    this.mqttClient.publish(topic, value, {}, (err) => {
-      if (err) {
-        console.error(`Lỗi gửi dữ liệu đến ${topic}:`, err);
-      } else {
-        console.log(`Gửi dữ liệu đến ${topic}: ${value}`);
-      }
-    });
-  }
+    async lightSet(userId: number, room: number, value: string) {
+        const feed = `${userId}/LED_room_${room}`;
+        await this.publish(userId,feed, value);
+    }
 
-  async lightSet(value: string) {
-    await this.publish("light1", value);
-  }
+    setSocketServer(io: Server) {
+        this.io = io;
+        console.log(' WebSocket server set in MqttService');
+    }
 
-  async lightBright(value: string) {
-    await this.publish("light1_brightness", value);
-    await this.publish("light1", value === "0" ? "0" : "1");
-  }
-
-  onModuleDestroy() {
-    console.log("Đóng kết nối MQTT");
-    this.mqttClient.end();
-  }
-
-  setSocketServer(io: Server) {
-    this.io = io;
-  }
+    onModuleDestroy() {
+        if (this.mqttClient) {
+        console.log(' MQTT connection closed');
+        this.mqttClient.end();
+        }
+    }
 }

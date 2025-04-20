@@ -11,7 +11,7 @@ export class MqttService implements OnModuleDestroy {
     private io: Server;
     private currentUserId: number;
     private readonly username = 'boylangtham11';
-    private readonly aioKey = 'aio_qflB23KCfcI97tbdNc8S8ntbuZkO';
+    private readonly aioKey = 'aio_NGyt55VdiY7ztKOBnSdEJ63lnnmv';
 
     connect(userId: number) {  // Chuyển userId thành kiểu string vì bạn có thể sử dụng chuỗi như "boylangtham11"
         this.currentUserId = userId;
@@ -62,7 +62,7 @@ export class MqttService implements OnModuleDestroy {
         } else {
             console.log(` Published to ${topic}: ${value}`);
         }
-      });
+    });
     };
 
     async lightSet(userId: number, room: number, value: string) {

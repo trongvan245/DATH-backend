@@ -1,10 +1,11 @@
-import { Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Post } from "@nestjs/common";
 import { RoomService } from "./room.service";
 import { GetUser } from "src/common/decorators/get-user.decorator";
 import { JwtPayLoad } from "src/common/model/jwt.payload";
 import { AddDeviceDto, CreateRoomDto, GetAllUserDeviceDto } from "./dto/room.dto";
-import { ApiBearerAuth, ApiOperation } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 
+@ApiTags("room")
 @Controller("room")
 @ApiBearerAuth()
 export class RoomController {
@@ -18,20 +19,17 @@ export class RoomController {
     };
   }
 
-  @ApiOperation({ summary: "Create room" })
   @Post("create")
-  async create(@GetUser() { sub, email }: JwtPayLoad, { roomName }: CreateRoomDto) {
+  async create(@GetUser() { sub, email }: JwtPayLoad, @Body() { roomName }: CreateRoomDto) {
     const room = await this.roomService.createRoom(sub, roomName);
-    const rooms = await this.roomService.getAllRoom(sub);
     return {
-      rooms,
+      room,
       message: "Create room successfully",
     };
   }
 
   @Post("add-device")
-  async addDevice(@GetUser() { sub, email }: JwtPayLoad, { deviceId, roomId }: AddDeviceDto) {
-    const room = await this.roomService.addDeviceToRoom(sub, deviceId, roomId);
+  async addDevice(@GetUser() { sub, email }: JwtPayLoad, @Body() { deviceId, roomId }: AddDeviceDto) {
     const rooms = await this.roomService.getAllRoom(sub);
     return {
       rooms,
@@ -40,7 +38,7 @@ export class RoomController {
   }
 
   @Get("device")
-  async getAllUserDevice(@GetUser() { sub, email }: JwtPayLoad, { roomId }: GetAllUserDeviceDto) {
+  async getAllUserDevice(@GetUser() { sub, email }: JwtPayLoad, @Body() { roomId }: GetAllUserDeviceDto) {
     const devices = await this.roomService.getAllUserDevice(roomId);
     return {
       devices,

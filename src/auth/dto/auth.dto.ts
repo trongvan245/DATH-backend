@@ -18,17 +18,23 @@ export class LoginDto {
 }
 
 export class RegisterDto {
-  @ApiProperty()
+  @ApiProperty({
+    example: "trongvan245",
+  })
   @IsNotEmpty({ message: "Username is required" })
   @IsString({ message: "Username must be a string" })
   username: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: "trongvan@gmail.com",
+  })
   @IsEmail()
   @IsNotEmpty({ message: "Email is required" })
   email: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: "123456",
+  })
   @IsNotEmpty()
   @IsString()
   password: string;

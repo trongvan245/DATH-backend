@@ -10,13 +10,24 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle("Do an Da Nganh API")
     .setDescription("Do an Da Nganh API description")
+    .addBearerAuth({
+      type: "http",
+      scheme: "bearer",
+      bearerFormat: "JWT", // Optional, but helps with documentation
+    })
     .setVersion("1.0")
     .addTag("Auth")
     .addTag("User")
-    .addBearerAuth()
+    .addTag("room")
+    .addTag("Device")
+    .addTag("Mqtt")
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("api", app, document);
+  SwaggerModule.setup("api", app, document, {
+    swaggerOptions: {
+      persistAuthorization: true, // 🔥 this is the key
+    },
+  });
 
   await app.listen(3000);
 

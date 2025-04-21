@@ -7,51 +7,54 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model ACTIVITY_LOG {
-  LogID     Int       @id @default(autoincrement())
-  Timestamp DateTime? @db.Timestamp(0)
-  EventType String?   @db.VarChar(50)
-  UserID    Int
-  DeviceID  Int
-  USER      USER      @relation(fields: [UserID], references: [UserID], onDelete: Cascade, map: "ACTIVITY_LOG_ibfk_1")
-  DEVICE    DEVICE    @relation(fields: [DeviceID], references: [DeviceID], onDelete: Cascade, map: "ACTIVITY_LOG_ibfk_2")
+model activity_log {
+  log_id     Int       @id @default(autoincrement())
+  timestamp  DateTime? @db.Timestamp(0)
+  event_type String?   @db.VarChar(50)
+  user_id    Int
+  device_id  Int
+  user       user      @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  device     device    @relation(fields: [device_id], references: [device_id], onDelete: Cascade)
 
-  @@index([DeviceID], map: "DeviceID")
-  @@index([UserID], map: "UserID")
+  @@index([device_id])
+  @@index([user_id])
 }
 
-model BLACKLIST {
-  Token String @id @db.VarChar(100)
+model blacklist {
+  token String @id @db.VarChar(100)
 }
 
-model DEVICE {
-  DeviceID     Int            @id @default(autoincrement())
-  Devicename   String?        @db.VarChar(50)
-  RoomID       Int
-  Status       String?        @db.VarChar(50)
-  AdafruitKey  String?        @db.VarChar(50)
-  ACTIVITY_LOG ACTIVITY_LOG[]
-  ROOM         ROOM           @relation(fields: [RoomID], references: [RoomID], onDelete: Cascade, map: "DEVICE_ibfk_1")
-
-  @@index([RoomID], map: "RoomID")
+model device {
+  device_id     Int            @id @default(autoincrement())
+  device_name   String?        @db.VarChar(50)
+  room_id       Int
+  status        String?        @db.VarChar(50)
+  adafruit_key  String?        @db.VarChar(50)
+  activity_logs activity_log[]
+  room          room           @relation(fields: [room_id], references: [room_id], onDelete: Cascade)
+  monday        Float?
+  tuesday       Float?
+  wednesday     Float?
+  thursday      Float?
+  @@index([room_id])
 }
 
-model ROOM {
-  RoomID      Int      @id @default(autoincrement())
-  Roomname    String?  @db.VarChar(50)
-  UserID      Int
-  AdafruitKey String?  @db.VarChar(50)
-  DEVICE      DEVICE[]
-  USER        USER     @relation(fields: [UserID], references: [UserID], onDelete: Cascade, map: "ROOM_ibfk_1")
+model room {
+  room_id      Int      @id @default(autoincrement())
+  room_name    String?  @db.VarChar(50)
+  user_id      Int
+  adafruit_key String?  @db.VarChar(50)
+  devices      device[]
+  user         user     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
 
-  @@index([UserID], map: "UserID")
+  @@index([user_id])
 }
 
-model USER {
-  UserID       Int            @id @default(autoincrement())
-  Username     String?        @db.VarChar(50)
-  Password     String?        @db.VarChar(255)
-  Email        String?        @db.VarChar(255)
-  ACTIVITY_LOG ACTIVITY_LOG[]
-  ROOM         ROOM[]
+model user {
+  user_id       Int            @id @default(autoincrement())
+  username      String?        @db.VarChar(50)
+  password      String?        @db.VarChar(255)
+  email         String?        @db.VarChar(255)
+  activity_logs activity_log[]
+  rooms         room[]
 }

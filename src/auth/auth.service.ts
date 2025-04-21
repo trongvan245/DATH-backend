@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { USER } from "@prisma/client";
 import { JwtPayLoad } from "src/common/model/jwt.payload";
 
 @Injectable()

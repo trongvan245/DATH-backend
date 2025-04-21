@@ -46,20 +46,19 @@ export class PowerModuleService {
         };
 
         if (device.status === "On") {
-          weeklyConsumption.thursday += powerIncrement;
+          weeklyConsumption.wednesday += powerIncrement;
         }
-
         // Update the device
         await this.prisma.device.update({
           where: {
             device_id: device.device_id,
           },
           data: {
-            thursday: weeklyConsumption.thursday,
+            wednesday: weeklyConsumption.wednesday,
           },
         });
 
-        this.logger.debug(`Device ${device.device_id}: +${powerIncrement.toFixed(2)} Wh for Thursday`);
+        this.logger.debug(`Device ${device.device_id}: +${powerIncrement.toFixed(2)} Wh for Wednesday`);
       }
     } catch (error) {
       this.logger.error(`Error updating power consumption: ${error.message}`);

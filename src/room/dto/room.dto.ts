@@ -22,7 +22,7 @@ export class AddDeviceDto {
 
 export class GetAllUserDeviceDto {
   @ApiProperty({ description: "ID of the room", example: 1 })
-  @IsNotEmpty({ message: "User ID is required" })
-  @IsNumber({}, { message: "User ID must be a number" })
+  // @IsNotEmpty({ message: "Room ID is required" })
+  // @IsNumber({}, { message: "User ID must be a number" })
   roomId: number;
 }

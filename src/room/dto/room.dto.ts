@@ -26,3 +26,8 @@ export class GetAllUserDeviceDto {
   // @IsNumber({}, { message: "User ID must be a number" })
   roomId: number;
 }
+
+export class GetDevicePowerDto {
+  @ApiProperty({ description: "ID of the device", example: 1 })
+  deviceId: number;
+}

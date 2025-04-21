@@ -32,7 +32,10 @@ model device {
   adafruit_key  String?        @db.VarChar(50)
   activity_logs activity_log[]
   room          room           @relation(fields: [room_id], references: [room_id], onDelete: Cascade)
-
+  monday        Float?
+  tuesday       Float?
+  wednesday     Float?
+  thursday      Float?
   @@index([room_id])
 }
 

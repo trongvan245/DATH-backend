@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { RoomService } from "./room.service";
 import { GetUser } from "src/common/decorators/get-user.decorator";
 import { JwtPayLoad } from "src/common/model/jwt.payload";
@@ -38,7 +38,7 @@ export class RoomController {
   }
 
   @Get("device")
-  async getAllUserDevice(@GetUser() { sub, email }: JwtPayLoad, @Body() { roomId }: GetAllUserDeviceDto) {
+  async getAllUserDevice(@GetUser() { sub, email }: JwtPayLoad, @Param() { roomId }: GetAllUserDeviceDto) {
     const devices = await this.roomService.getAllUserDevice(roomId);
     return {
       devices,

@@ -42,4 +42,9 @@ export class RoomService {
     const devices = await this.prisma.device.findMany({});
     return devices;
   }
+
+  async getDeviceInfo(deviceId: number) {
+    const device = await this.prisma.device.findFirst({ where: { device_id: deviceId } });
+    return device;
+  }
 }

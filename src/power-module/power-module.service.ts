@@ -32,7 +32,7 @@ export class PowerModuleService {
       // Update each device that is on
       for (const device of onDevices) {
         // Generate random power consumption between 2.5 and 3.0
-        const powerIncrement = Math.random() * 0.5 + 2.5;
+        const powerIncrement = Math.random() * 0.5 + 0.5; // Random value between 0.5 and 1.0
 
         // Initialize or parse weekly consumption
         let weeklyConsumption = {

@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { RoomService } from "./room.service";
 import { GetUser } from "src/common/decorators/get-user.decorator";
 import { JwtPayLoad } from "src/common/model/jwt.payload";
-import { AddDeviceDto, CreateRoomDto, GetAllUserDeviceDto } from "./dto/room.dto";
+import { AddDeviceDto, CreateRoomDto, GetAllUserDeviceDto, GetDevicePowerDto } from "./dto/room.dto";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 
 @ApiTags("room")
@@ -36,8 +36,16 @@ export class RoomController {
       message: "Add device to room successfully",
     };
   }
-
   @Get("device")
+  async getDeviceInfo(@GetUser() { sub, email }: JwtPayLoad, @Param() { deviceId }: GetDevicePowerDto) {
+    const devices = await this.roomService.getDeviceInfo(deviceId);
+    return {
+      devices,
+      message: "Get all devices successfully",
+    };
+  }
+
+  @Get("list-device")
   async getAllUserDevice(@GetUser() { sub, email }: JwtPayLoad, @Param() { roomId }: GetAllUserDeviceDto) {
     const devices = await this.roomService.getAllUserDevice(roomId);
     return {

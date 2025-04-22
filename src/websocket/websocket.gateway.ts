@@ -47,6 +47,6 @@ import {
         client.join(userId.toString());
     
         // Kết nối MQTT nếu chưa kết nối
-        this.mqttService.connect(userId);
+        //this.mqttService.connect(userId);
         }
     }

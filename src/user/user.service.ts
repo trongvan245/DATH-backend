@@ -10,4 +10,11 @@ export class UserService {
         const device = rooms.map((room) => room.devices).flat();
         return device;
     }
+
+    async updateDeviceStatus(deviceId: number, status: string) {
+        await this.prisma.device.update({
+            where: { device_id: deviceId },
+            data: { status: status },
+        });
+    }
 }

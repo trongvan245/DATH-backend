@@ -11,4 +11,7 @@ export class DeviceService {
 
         return { message: `Device ${deviceId} for user ${userId} set to ${state}` };
     }
+
+    
+    
 }

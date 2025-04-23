@@ -18,7 +18,7 @@ export class PowerModuleService {
 
   constructor(private prisma: PrismaService) {}
 
-  @Interval(5000) // Run every 1000 ms (1 second)
+  @Interval(15000) // Run every 1000 ms (1 second)
   async updatePowerConsumption() {
     this.logger.debug("Updating power consumption for devices...");
     try {

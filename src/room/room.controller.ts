@@ -36,8 +36,9 @@ export class RoomController {
       message: "Add device to room successfully",
     };
   }
-  @Get("device")
-  async getDeviceInfo(@GetUser() { sub, email }: JwtPayLoad, @Param() { deviceId }: GetDevicePowerDto) {
+  @Get("device/:deviceId")
+  async getDeviceInfo(@GetUser() user: JwtPayLoad, @Param("deviceId") deviceId: number) {
+    console.log(deviceId);
     const devices = await this.roomService.getDeviceInfo(deviceId);
     return {
       devices,
@@ -45,8 +46,8 @@ export class RoomController {
     };
   }
 
-  @Get("list-device")
-  async getAllUserDevice(@GetUser() { sub, email }: JwtPayLoad, @Param() { roomId }: GetAllUserDeviceDto) {
+  @Get("list-device/:roomId")
+  async getAllUserDevice(@GetUser() user: JwtPayLoad, @Param("roomId") roomId: number) {
     const devices = await this.roomService.getAllUserDevice(roomId);
     return {
       devices,

@@ -45,7 +45,7 @@ export class PowerModuleService {
           saturday: 0,
         };
 
-        if (device.status === "On") {
+        if (device.status === "ON") {
           weeklyConsumption.wednesday += powerIncrement;
         }
         // Update the device
